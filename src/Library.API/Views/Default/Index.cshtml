@@ -1,0 +1,94 @@
+﻿@model Library.API.Models.ViewModel
+
+@{
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@Model.Message</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () { 
+            var save_id;
+            $('#btn1').click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/authors',
+                    success: function (result) {
+                        var s = '';
+                        for (var i = 0; i < result.length; i++) {
+                            s += '<br>Id: ' + result[i].id;
+                            s += '<br>Name: ' + result[i].name;
+                            s += '<br>Age: ' + result[i].age;
+                            s += '<br>Genre: ' + result[i].genre;
+                            s += '<br>------------------';
+                            save_id = result[i].id;
+                        }
+                        $('#result_all').html(s);
+                    }
+                });
+            });
+            $('#btn2').click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/authors/' + save_id +'/books',
+                    success: function (result) {
+                        var s = '';
+                        for (var i = 0; i < result.length; i++) {
+                            s += '<br>Id: ' + result[i].id;
+                            s += '<br>Name: ' + result[i].titel;
+                            s += '<br>Des: ' + result[i].description;
+                            s += '<br>------------------';
+                        }
+                        $('#result_books').html(s);
+                    }
+                });
+            });
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "/api/authors",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "cache-control": "no-cache"
+                    
+                },
+                "processData": false,
+                "data": "{\n    \"firstName\": \"Tommy\",\n    \"lastName\": \"Steger\",\n    \"dateOfBirth\": \"1948-03-04T00:00:00\",\n    \"genre\": \"Thriller\"\n}"
+            }
+
+            $('#btn3').click(function () {
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    $('#result_Authors').html(response);
+                });
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <h3>@Model.Message</h3><br />
+    <fieldset>
+        <legend>All Authors</legend>
+        <input type="button" value="Get All Authors" id="btn1" />
+        <br />
+        <span id="result_all"></span>
+    </fieldset>
+    <fieldset>
+        <legend>All Books</legend>
+        <input type="button" value="Get All Authors" id="btn2" />
+        <br />
+        <span id="result_books"></span>
+    </fieldset>
+    <fieldset>
+        <legend>Update Authors</legend>
+        <input type="button" value="Get All Authors" id="btn3" />
+        <br />
+        <span id="result_Authors"></span>
+    </fieldset>
+
+</body>
+</html>
